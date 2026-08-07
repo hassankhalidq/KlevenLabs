@@ -1,0 +1,99 @@
+/* ============================================================
+   Klevon Labs — design tokens
+   The palette is locked to four values. Every other colour on
+   the page is one of these at an alpha, never a new hue and
+   never a neutral grey (grey on a warm black reads dirty).
+   ============================================================ */
+
+@font-face {
+  font-family: 'Bricolage Grotesque';
+  src: url('/fonts/bricolage-grotesque-latin.woff2') format('woff2');
+  font-weight: 200 800;
+  font-stretch: 75% 100%;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6,
+    U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Hanken Grotesk';
+  src: url('/fonts/hanken-grotesk-latin.woff2') format('woff2');
+  font-weight: 300 800;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6,
+    U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('/fonts/jetbrains-mono-latin.woff2') format('woff2');
+  font-weight: 400 600;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6,
+    U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root {
+  /* ---- Palette (locked, four values) ---- */
+  --ink: #0d0d0d;
+  --signal: #f2c230;
+  --ember: #c1361f;
+  --paper: #f7f5ef;
+
+  /* ---- Derived surfaces. Tinted from the palette, never grey. ---- */
+  --ink-raised: #141312;
+  --ink-hairline: rgba(247, 245, 239, 0.14);
+  --ink-hairline-soft: rgba(247, 245, 239, 0.08);
+  --paper-hairline: rgba(13, 13, 13, 0.16);
+  --paper-hairline-soft: rgba(13, 13, 13, 0.09);
+
+  /* ---- Text roles ---- */
+  /* On ink: paper at alpha. Warm because paper is warm. */
+  --on-ink: #f7f5ef;
+  --on-ink-2: rgba(247, 245, 239, 0.72); /* 4.5:1+ on --ink */
+  --on-ink-3: rgba(247, 245, 239, 0.54); /* large text / labels only */
+  /* On paper: ink at alpha. */
+  --on-paper: #0d0d0d;
+  --on-paper-2: rgba(13, 13, 13, 0.74);
+  --on-paper-3: rgba(13, 13, 13, 0.55);
+  /* On signal: always full ink. Yellow needs black, never white. */
+  --on-signal: #0d0d0d;
+
+  /* ---- Type ---- */
+  --font-display: 'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;
+  --font-body: 'Hanken Grotesk', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Mono', monospace;
+
+  /* Fluid scale. Hero tops out at 9.5rem so a 3-line headline still
+     clears a 900px-tall viewport. */
+  --t-hero: clamp(2.7rem, 9.5vw, 10.5rem);
+  --t-display: clamp(2.1rem, 5.6vw, 5rem);
+  --t-display-sm: clamp(1.6rem, 3.2vw, 2.6rem);
+  --t-lead: clamp(1.02rem, 1.35vw, 1.28rem);
+  --t-body: clamp(0.98rem, 1.05vw, 1.06rem);
+  --t-mono: clamp(0.66rem, 0.78vw, 0.75rem);
+
+  /* ---- Space ---- */
+  --gutter: clamp(1.25rem, 5vw, 5.5rem);
+  --section-y: clamp(6rem, 13vh, 11rem);
+  --shell: 1560px;
+
+  /* ---- Motion ----
+     Strong curves. The browser built-ins are too weak to read as
+     authored at these durations. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --dur-tap: 140ms;
+  --dur-ui: 220ms;
+  --dur-reveal: 620ms;
+
+  /* ---- Layer scale. Documented so nobody invents a z-999. ---- */
+  --z-canvas: 0;
+  --z-content: 1;
+  --z-nav: 40;
+  --z-grain: 60;
+  --z-curtain: 90;
+}

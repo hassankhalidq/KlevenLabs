@@ -36,7 +36,7 @@ Frames are `4:5`, so export at roughly `1200x1500`.
 and `Cadence` are placeholders following the same one-word convention. Replace
 them with the real names.
 
-Also confirm `hello@klevonlabs.com`, used in `src/sections/Contact.jsx` and
+Also confirm `hassankhalidq@gmail.com`, used in `src/sections/Contact.jsx` and
 `src/sections/Footer.jsx`. The contact form has no backend: it validates, then
 hands off to the visitor's mail client. Replace the body of `handleSubmit` to
 post to a real endpoint.

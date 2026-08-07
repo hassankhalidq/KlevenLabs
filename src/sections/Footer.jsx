@@ -1,4 +1,4 @@
-const STUDIO_EMAIL = 'hello@klevonlabs.com';
+const STUDIO_EMAIL = 'hassankhalidq@gmail.com';
 
 export default function Footer() {
   return (

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Reveal from '../components/Reveal';
 
-const STUDIO_EMAIL = 'hello@klevonlabs.com';
+const STUDIO_EMAIL = 'hassankhalidq@gmail.com';
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 /**

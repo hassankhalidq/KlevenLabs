@@ -67,6 +67,7 @@ Corner radius is zero everywhere by design.
 ```bash
 node qa/audit.mjs   # axe WCAG 2.1 AA, copy bans, heading order, reduced motion
 node qa/shot.mjs    # screenshots at 1440 / 834 / 390, checks for overflow
+node qa/prod-check.mjs https://kleven-labs.vercel.app   # verify the live site
 ```
 
 Both need `npm run preview` running first. They are dev-only; if you want a

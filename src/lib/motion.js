@@ -1,6 +1,10 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
+// Required by Lenis 1.3. Among other things it sets scroll-behavior: auto on
+// the smoothed root, which is the documented conflict with a stylesheet that
+// declares scroll-behavior: smooth.
+import 'lenis/dist/lenis.css';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -47,7 +51,15 @@ export function startSmoothScroll() {
     // Touch devices already have momentum scrolling that feels native. Adding
     // Lenis on top makes the page feel detached from the finger.
     smoothTouch: false,
+    // Lenis owns anchor jumps. The stylesheet no longer sets
+    // scroll-behavior: smooth, because that fights Lenis for the same scroll.
+    anchors: true,
   });
+
+  // Exposed on purpose: without a handle there is no way to inspect or unstick
+  // scroll from the console, which is exactly the position a scroll bug leaves
+  // you in.
+  window.lenis = lenis;
 
   const onScroll = () => ScrollTrigger.update();
   lenis.on('scroll', onScroll);
@@ -61,5 +73,6 @@ export function startSmoothScroll() {
     gsap.ticker.remove(raf);
     gsap.ticker.lagSmoothing(500, 33);
     lenis.destroy();
+    if (window.lenis === lenis) delete window.lenis;
   };
 }

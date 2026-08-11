@@ -13,6 +13,10 @@ const WIPE_MS = 260;
  *
  * Counting is driven by rAF against a real clock rather than a setInterval per
  * tick, so a busy main thread drops numbers instead of stretching the sequence.
+ *
+ * This deliberately does NOT lock scroll. A lock here saves the visitor from
+ * scrolling behind a panel for 780ms; a lock that fails to release looks
+ * exactly like a page that cannot scroll, and that trade is not worth making.
  */
 export default function Curtain() {
   const [count, setCount] = useState(0);
@@ -23,11 +27,9 @@ export default function Curtain() {
   useEffect(() => {
     if (prefersReducedMotion()) {
       setGone(true);
-      document.documentElement.classList.remove('is-loading');
       return undefined;
     }
 
-    document.documentElement.classList.add('is-loading');
     const start = performance.now();
     let wipeTimer = 0;
     let doneTimer = 0;
@@ -43,7 +45,6 @@ export default function Curtain() {
         setWiping(true);
         wipeTimer = setTimeout(() => {
           setGone(true);
-          document.documentElement.classList.remove('is-loading');
         }, WIPE_MS);
       }
     };
@@ -52,14 +53,12 @@ export default function Curtain() {
     // Hard stop: the page is never held hostage by this, whatever happens.
     doneTimer = setTimeout(() => {
       setGone(true);
-      document.documentElement.classList.remove('is-loading');
     }, 1600);
 
     return () => {
       cancelAnimationFrame(raf.current);
       clearTimeout(wipeTimer);
       clearTimeout(doneTimer);
-      document.documentElement.classList.remove('is-loading');
     };
   }, []);
 

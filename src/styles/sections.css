@@ -14,11 +14,9 @@
 
 /* ---------- Load curtain ---------- */
 
-/* Scroll is locked only while the counter runs. */
-html.is-loading,
-html.is-loading body {
-  overflow: hidden;
-}
+/* No scroll lock during the load sequence. Locking scroll here bought very
+   little (the curtain covers the viewport anyway) and a lock that fails to
+   release is indistinguishable from a page that cannot scroll at all. */
 
 .curtain {
   position: fixed;

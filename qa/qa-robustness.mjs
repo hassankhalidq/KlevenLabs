@@ -39,7 +39,15 @@ const browser = await chromium.launch();
 
   await page.goto(BASE, { waitUntil: 'networkidle' });
   await page.waitForTimeout(3200);
-  // Scroll the page: pins and refreshes are a classic late-CLS source.
+
+  // LCP is read BEFORE scrolling. Scroll keeps promoting new, larger elements
+  // to LCP candidate (a full-width headline further down the page will always
+  // beat the hero), which measures the harness rather than the page. What a
+  // visitor waits for is the first screen.
+  const loadLcp = await page.evaluate(() => window.__lcp);
+
+  // CLS, by contrast, genuinely accumulates the whole way down, so it is
+  // measured across the full scroll.
   const h = await page.evaluate(() => document.documentElement.scrollHeight);
   for (let i = 1; i <= 14; i += 1) {
     await page.evaluate((y) => window.scrollTo(0, y), Math.round((h - 900) * (i / 14)));
@@ -50,11 +58,12 @@ const browser = await chromium.launch();
     shifts: window.__shifts.slice(0, 6),
     lcp: window.__lcp,
   }));
-  notes.push(`LCP ${v.lcp}ms | CLS ${v.cls}`);
+  notes.push(`LCP ${loadLcp}ms (at load, pre-scroll) | CLS ${v.cls} (full page)`);
+  if (v.lcp !== loadLcp) notes.push(`  note: LCP candidate moved to ${v.lcp}ms once scrolled; not what a visitor waits for`);
   if (v.shifts.length) notes.push(`  shifts: ${JSON.stringify(v.shifts)}`);
   if (v.cls > 0.1) fails.push(`CLS ${v.cls} exceeds 0.1`);
   else if (v.cls > 0.05) warns.push(`CLS ${v.cls} is above the 0.05 comfort line`);
-  if (v.lcp > 2500) fails.push(`LCP ${v.lcp}ms exceeds 2500ms`);
+  if (loadLcp > 2500) fails.push(`LCP ${loadLcp}ms exceeds 2500ms`);
   await page.close();
   await ctx.close();
 }

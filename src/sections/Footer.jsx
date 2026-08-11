@@ -1,3 +1,5 @@
+import { LogoSymbol } from '../components/Logo';
+
 const STUDIO_EMAIL = 'hassankhalidq@gmail.com';
 
 export default function Footer() {
@@ -6,8 +8,11 @@ export default function Footer() {
       <div className="shell footer-inner">
         <div className="footer-brand">
           <div className="footer-mark">
-            <span className="footer-mark-name">Klevon</span>
-            <span className="footer-mark-sub">Labs</span>
+            <LogoSymbol />
+            <span className="footer-mark-word">
+              <span className="footer-mark-name">Klevon</span>
+              <span className="footer-mark-sub">Labs</span>
+            </span>
           </div>
           {/* The official brand promise, guide p.06. */}
           <p className="footer-promise">Clear thinking. Crafted delivery.</p>

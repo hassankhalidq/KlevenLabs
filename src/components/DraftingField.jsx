@@ -90,8 +90,17 @@ export default function DraftingField({
         const falloff = Math.exp(-((u - sweep) ** 2) / (2 * sigma * sigma));
         const alpha = (0.17 + falloff * 0.42) * intensity * (1 + p * 0.5);
 
+        // Hue travels with the sweep: Klevon Yellow where the light lands,
+        // cooling out toward Alert red away from it. Both ends are brand
+        // values, so the field gets real tonal range without a fifth colour.
+        // This is the warm yellow-to-red world the brand board already shows.
+        const warm = 1 - falloff;
+        const r = Math.round(244 + (215 - 244) * warm);
+        const g = Math.round(196 + (38 - 196) * warm);
+        const b = Math.round(48 + (61 - 48) * warm);
+
         ctx.beginPath();
-        ctx.strokeStyle = `rgba(244, 196, 48, ${alpha.toFixed(4)})`;
+        ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${alpha.toFixed(4)})`;
         ctx.lineWidth = 0.7 + falloff * 0.9;
 
         for (let y = -step; y <= height + step; y += step) {

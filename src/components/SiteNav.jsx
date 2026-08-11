@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { LogoSymbol } from './Logo';
 
 /**
  * Every destination is a section on this page. Nothing here points at a route
@@ -29,12 +30,14 @@ export default function SiteNav() {
       <div ref={sentinel} className="nav-sentinel" aria-hidden="true" />
       <header className={`nav${solid ? ' nav-solid' : ''}`}>
         <div className="nav-inner shell">
-          {/* Wordmark variant 04 from the guide: KLEVON over a letterspaced
-              LABS. The approved symbol lockup needs the real SVG asset, which
-              is not in this repo, and the guide forbids rebuilding it. */}
+          {/* Primary signature (guide p.09): symbol plus wordmark, placed as
+              one locked asset. */}
           <a href="#top" className="nav-mark" aria-label="Klevon Labs, back to top">
-            <span className="nav-mark-name">Klevon</span>
-            <span className="nav-mark-sub">Labs</span>
+            <LogoSymbol />
+            <span className="nav-mark-word">
+              <span className="nav-mark-name">Klevon</span>
+              <span className="nav-mark-sub">Labs</span>
+            </span>
           </a>
           <nav aria-label="Primary">
             <ul className="nav-links label">

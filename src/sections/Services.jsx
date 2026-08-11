@@ -12,7 +12,7 @@ const SERVICES = [
     name: 'E-commerce',
     line: 'Stores built for conversion and craft at the same time, not a Shopify theme wearing a new logo.',
     tag: 'Commerce',
-    tone: 'lab',
+    tone: 'yellow',
   },
   {
     name: 'Mobile apps',

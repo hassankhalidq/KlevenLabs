@@ -87,16 +87,30 @@
   gap: 1.5rem;
 }
 
-/* Wordmark variant 04: KLEVON with a letterspaced LABS beneath. */
+/* Primary signature: symbol + stacked wordmark, locked together. */
 .nav-mark,
 .footer-mark {
   display: inline-flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.12em;
+  align-items: center;
+  gap: 0.6rem;
   text-decoration: none;
   color: var(--on-ink);
   line-height: 1;
+}
+
+.logo-symbol {
+  width: 1.65rem;
+  height: 1.65rem;
+  flex: none;
+  fill: var(--yellow);
+}
+
+.nav-mark-word,
+.footer-mark-word {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.14em;
 }
 
 .nav-mark-name,
@@ -502,12 +516,15 @@
 
 /* ---------- Manifesto ---------- */
 
+/* Full Klevon Yellow band, ink type: the "ink on yellow" colorway from p.13.
+   The identity colour is meant to be used generously, and a page that is 95%
+   near-black with hairline accents is not that. */
 .manifesto {
   /* Tighter than a full section on purpose: this is a beat, not a chapter. */
   padding-block: clamp(3.25rem, 8vh, 6rem);
   padding-inline: var(--gutter);
-  border-top: 1px solid var(--ink-hairline-soft);
-  border-bottom: 1px solid var(--ink-hairline-soft);
+  background: var(--yellow);
+  color: var(--on-yellow);
   overflow: hidden;
 }
 
@@ -517,7 +534,7 @@
   font-weight: var(--w-display);
   line-height: var(--lh-display);
   letter-spacing: -0.035em;
-  color: var(--yellow);
+  color: var(--on-yellow);
   text-align: center;
   max-width: 22ch;
   margin-inline: auto;
@@ -633,6 +650,28 @@
 .service-panel-lab {
   background: var(--lab);
   color: var(--on-lab);
+}
+
+/* Ink on Klevon Yellow, guide p.13. The identity colour gets a full screen
+   rather than only hairlines and hover states. */
+.service-panel-yellow {
+  background: var(--yellow);
+  color: var(--on-yellow);
+}
+
+.service-panel-yellow .service-meta {
+  border-top-color: rgba(17, 17, 17, 0.28);
+}
+
+.service-panel-yellow .service-line {
+  color: rgba(17, 17, 17, 0.78);
+}
+
+/* 0.6 alpha lands at 4.17:1 on Klevon Yellow, under the 4.5:1 bar for text
+   this size. 0.7 clears it at 5.6:1. Yellow is a light ground, so secondary
+   ink text has less room here than the same alpha has on the off-white. */
+.service-panel-yellow .service-tag {
+  color: rgba(17, 17, 17, 0.7);
 }
 
 .service-inner {
@@ -1049,8 +1088,10 @@
   max-width: 14ch;
 }
 
+/* Alert's one prominent moment on the page. Display scale, so the 3:1 bar
+   applies and #D7263D on ink clears it at 3.84:1. */
 .contact-title-2 {
-  color: var(--yellow);
+  color: var(--alert);
 }
 
 .contact-form {

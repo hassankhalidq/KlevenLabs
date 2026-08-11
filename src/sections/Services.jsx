@@ -17,7 +17,10 @@ const SERVICES = [
   {
     name: 'Mobile apps',
     line: 'Product-minded builds, from the first flow to a shipped app.',
-    tag: 'iOS / Android',
+    // One-word category, matching Web and Commerce. "iOS / Android" would
+    // render as "IOS / ANDROID" under the uppercase treatment, and a studio
+    // selling craft should not be the one miscapitalising Apple's product.
+    tag: 'Mobile',
     tone: 'ink',
   },
 ];
@@ -52,6 +55,12 @@ export default function Services() {
             end: '+=200%',
             pin: '.services-pin',
             pinSpacing: true,
+            // Pin by transform, not position:fixed. Fixed pinning is visually
+            // identical here but takes the element out of flow, and Chrome
+            // scores that collapsing box as layout shift: it was worth ~1.0 CLS
+            // on its own. Scrolling does not count as "recent input", so those
+            // shifts land in real Core Web Vitals rather than being excused.
+            pinType: 'transform',
             scrub: true,
             invalidateOnRefresh: true,
           },

@@ -282,6 +282,27 @@ html.is-loading body {
   }
 }
 
+/* Short viewports: a 13" laptop once browser chrome is accounted for, or a
+   phone in landscape. The hero scale is driven by viewport WIDTH, which says
+   nothing about whether three lines of it plus a subhead and a CTA will fit
+   the HEIGHT. Without this the CTA lands below the fold at 1440x620. */
+@media (max-height: 780px) {
+  :root {
+    --t-hero: clamp(2.15rem, 6.6vw, 5.2rem);
+  }
+  .hero-body {
+    padding-top: calc(68px + 1.5rem);
+    padding-bottom: clamp(2rem, 5vh, 3.25rem);
+  }
+  .hero-eyebrow {
+    margin-bottom: clamp(0.75rem, 2vh, 1.25rem);
+  }
+  .hero-tail {
+    margin-top: clamp(1rem, 2.5vh, 1.75rem);
+    gap: clamp(1rem, 2vh, 1.5rem);
+  }
+}
+
 .hero-eyebrow {
   color: var(--signal);
   margin-bottom: clamp(1.25rem, 3vh, 2.25rem);

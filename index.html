@@ -7,17 +7,31 @@
     <meta name="theme-color" content="#0d0d0d" />
 
     <title>Klevon Labs: hand-coded websites, stores and apps</title>
+    <!-- Kept under 160 characters so search results do not truncate it. -->
     <meta
       name="description"
-      content="A one-person studio designing and building hand-coded websites, e-commerce and mobile apps for clients in the Gulf, UK, Australia and Southeast Asia. No templates, no page builders."
+      content="A one-person studio building hand-coded websites, stores and apps for clients in the Gulf, UK, Australia and Southeast Asia. No templates, no page builders."
     />
+    <link rel="canonical" href="https://kleven-labs.vercel.app/" />
 
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Klevon Labs" />
+    <meta property="og:url" content="https://kleven-labs.vercel.app/" />
     <meta property="og:title" content="Klevon Labs" />
     <meta
       property="og:description"
       content="Built like a product. Designed like art. Coded by hand."
     />
+    <!-- Rendered from the real hero by qa/make-og.mjs. Regenerate after any
+         hero change so the share card does not drift from the page. -->
+    <meta property="og:image" content="https://kleven-labs.vercel.app/og.jpg" />
+    <meta property="og:image:width" content="2400" />
+    <meta property="og:image:height" content="1260" />
+    <meta
+      property="og:image:alt"
+      content="Klevon Labs. Built like a product. Designed like art. Coded by hand."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
 
     <!-- All three faces are used above the fold: mono in the eyebrow, display
          in the headline, body in the subhead. Preloaded so the curtain lifts
@@ -46,6 +60,40 @@
   </head>
   <body>
     <div id="root"></div>
+    <!-- The page is client-rendered, so without JS the root stays empty. This
+         is the whole content, not a nag: it still says who this is and how to
+         make contact. -->
+    <noscript>
+      <div style="
+        min-height: 100vh; display: flex; flex-direction: column;
+        justify-content: center; gap: 1.5rem; padding: 2rem 6vw;
+        background: #0d0d0d; color: #f7f5ef;
+        font-family: 'Hanken Grotesk', system-ui, sans-serif;
+      ">
+        <p style="
+          font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;
+          letter-spacing: 0.2em; text-transform: uppercase; color: #f2c230;
+        ">Karachi-built. Globally shipped.</p>
+        <h1 style="
+          font-family: 'Bricolage Grotesque', system-ui, sans-serif;
+          font-size: clamp(2rem, 6vw, 4.5rem); line-height: 0.95;
+          letter-spacing: -0.04em; font-weight: 600; margin: 0;
+        ">Built like a product.<br />Designed like art.<br />Coded by hand.</h1>
+        <p style="max-width: 46ch; line-height: 1.5; color: rgba(247,245,239,0.72);">
+          Klevon Labs designs and builds websites, stores and apps for clients
+          in the Gulf, UK, Australia and Southeast Asia. This page needs
+          JavaScript for the full experience.
+        </p>
+        <p>
+          <a href="mailto:hassankhalidq@gmail.com" style="
+            display: inline-block; background: #f2c230; color: #0d0d0d;
+            padding: 1rem 1.75rem; text-decoration: none;
+            font-family: 'JetBrains Mono', monospace; font-size: 0.75rem;
+            letter-spacing: 0.18em; text-transform: uppercase;
+          ">Start a project</a>
+        </p>
+      </div>
+    </noscript>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

@@ -51,6 +51,7 @@ export default function Hero() {
           end: '+=150%',
           pin: true,
           pinSpacing: true,
+          pinType: 'transform', // see the note in Services: avoids CLS
           scrub: true,
           onUpdate: (self) => {
             progress.current = self.progress;

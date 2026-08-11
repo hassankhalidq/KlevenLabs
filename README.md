@@ -94,6 +94,11 @@ node qa/scroll-test.mjs      # screenshots down the full page, desktop + mobile
 node qa/perf.mjs '' 4        # frame times under 4x CPU throttle while scrolling
 node qa/reduced-motion.mjs   # confirms every mechanic is off and page is readable
 node qa/mech-check.mjs http://localhost:5173/   # ScrollTrigger + line draw (dev server)
+node qa/qa-browsers.mjs      # Chromium, Firefox and WebKit, desktop + mobile
+node qa/qa-functional.mjs    # anchors, skip link, tab order, form, marquee
+node qa/qa-responsive.mjs    # 12 viewports, 320 to 2560, hero fit and overflow
+node qa/qa-robustness.mjs    # LCP/CLS, WCAG text spacing, resize mid-pin, meta, no-JS
+node qa/make-og.mjs          # regenerate public/og.jpg from the live hero
 ```
 
 All need `npm run preview` running first, except `mech-check`, which needs

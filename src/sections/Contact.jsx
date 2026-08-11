@@ -85,7 +85,7 @@ export default function Contact() {
           <h2 className="contact-title">
             Have a project worth building properly?
             <br />
-            <span className="contact-title-2">Let us talk.</span>
+            <span className="contact-title-2">Let&rsquo;s talk.</span>
           </h2>
         </Reveal>
 

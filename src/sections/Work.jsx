@@ -87,13 +87,13 @@ export default function Work() {
                     intensity={1.45}
                   />
                 )}
-                <p className="work-detail mono">{project.detail}</p>
+                <p className="work-detail label">{project.detail}</p>
               </div>
 
               <div className="work-meta">
                 <h3 className="work-name">{project.name}</h3>
                 <p className="work-line">{project.line}</p>
-                <p className="work-tags mono">
+                <p className="work-tags label">
                   <span>{project.tag}</span>
                   <span className="work-concept">Concept</span>
                 </p>

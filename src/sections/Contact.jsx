@@ -50,7 +50,7 @@ export default function Contact() {
 
   const field = (name, label, type = 'text') => (
     <div className="field">
-      <label className="field-label mono" htmlFor={name}>
+      <label className="field-label label" htmlFor={name}>
         {label}
       </label>
       <span className="field-wrap">

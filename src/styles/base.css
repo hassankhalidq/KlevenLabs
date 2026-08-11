@@ -29,7 +29,7 @@ html {
 body {
   background: var(--ink);
   color: var(--on-ink);
-  font-family: var(--font-body);
+  font-family: var(--font);
   font-size: var(--t-body);
   font-weight: 400;
   line-height: 1.6;
@@ -53,14 +53,31 @@ textarea {
   color: inherit;
 }
 
-h1,
+/* Weights per guide p.17-18: ExtraBold for display and H1, Semibold for H2.
+   Manrope is a wider face than what this page used before, so display tracking
+   goes tighter to keep long headlines on their intended line count. */
+h1 {
+  font-family: var(--font);
+  font-weight: var(--w-display);
+  line-height: var(--lh-hero);
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
 h2,
 h3 {
-  font-family: var(--font-display);
-  font-weight: 600;
-  line-height: 0.94;
-  letter-spacing: -0.035em;
+  font-family: var(--font);
+  font-weight: var(--w-h2);
+  line-height: var(--lh-h2);
+  letter-spacing: -0.02em;
   text-wrap: balance;
+}
+
+/* Section headlines run at Display scale, so they take the Display weight. */
+.display {
+  font-weight: var(--w-display);
+  line-height: var(--lh-display);
+  letter-spacing: -0.035em;
 }
 
 p {
@@ -70,13 +87,13 @@ p {
 /* ---- Browser surfaces ---- */
 
 ::selection {
-  background: var(--signal);
-  color: var(--on-signal);
+  background: var(--yellow);
+  color: var(--on-yellow);
 }
 
 :root {
-  caret-color: var(--signal);
-  scrollbar-color: rgba(242, 194, 48, 0.34) var(--ink);
+  caret-color: var(--yellow);
+  scrollbar-color: rgba(244, 196, 48, 0.34) var(--ink);
   scrollbar-width: thin;
   color-scheme: dark;
 }
@@ -89,16 +106,16 @@ p {
   background: var(--ink);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(242, 194, 48, 0.28);
+  background: rgba(244, 196, 48, 0.28);
   border: 3px solid var(--ink);
   border-radius: 99px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(242, 194, 48, 0.5);
+  background: rgba(244, 196, 48, 0.5);
 }
 
 :focus-visible {
-  outline: 2px solid var(--signal);
+  outline: 2px solid var(--yellow);
   outline-offset: 3px;
   border-radius: 2px;
 }
@@ -125,16 +142,18 @@ a {
 
 /* Off-white region. The page is dark; this is the single, deliberate
    colour-block flip the brief calls for, and it flips back once. */
-.region-paper {
-  background: var(--paper);
-  color: var(--on-paper);
+.region-lab {
+  background: var(--lab);
+  color: var(--on-lab);
 }
 
-.mono {
-  font-family: var(--font-mono);
-  font-size: var(--t-mono);
-  font-weight: 500;
-  letter-spacing: 0.2em;
+/* The label role, per guide p.18: Bold uppercase. With the mono face dropped,
+   weight and tracking are what carry the technical register the mono used to. */
+.label {
+  font-family: var(--font);
+  font-size: var(--t-label);
+  font-weight: var(--w-label);
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   font-feature-settings: 'tnum' 1;
 }
@@ -146,8 +165,8 @@ a {
   color: var(--on-ink-2);
 }
 
-.region-paper .lead {
-  color: var(--on-paper-2);
+.region-lab .lead {
+  color: var(--on-lab-2);
 }
 
 .sr-only {
@@ -161,17 +180,20 @@ a {
   border: 0;
 }
 
-/* Skip link: first tab stop, visible only when focused. */
+/* Skip link: first tab stop, visible only when focused.
+   Fixed, not absolute: an absolutely positioned skip link scrolls away with
+   the document, so tabbing back to it from further down the page reveals it
+   somewhere above the viewport where nobody can see it. */
 .skip {
-  position: absolute;
+  position: fixed;
   top: 0.75rem;
   left: 0.75rem;
   z-index: 100;
   transform: translateY(-160%);
-  background: var(--signal);
-  color: var(--on-signal);
+  background: var(--yellow);
+  color: var(--on-yellow);
   padding: 0.6rem 1rem;
-  font-family: var(--font-mono);
+  font-family: var(--font);
   font-size: 0.75rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -203,6 +225,6 @@ a {
   border: 0;
   border-top: 1px solid var(--ink-hairline);
 }
-.region-paper .rule {
-  border-top-color: var(--paper-hairline);
+.region-lab .rule {
+  border-top-color: var(--lab-hairline);
 }

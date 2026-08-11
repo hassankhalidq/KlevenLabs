@@ -19,7 +19,7 @@ const TAGS = [
  */
 export default function Marquee() {
   const strip = (hidden) => (
-    <ul className="marquee-strip mono" aria-hidden={hidden || undefined}>
+    <ul className="marquee-strip label" aria-hidden={hidden || undefined}>
       {TAGS.map((tag) => (
         <li key={tag}>
           <span>{tag}</span>

@@ -1,4 +1,11 @@
+<!-- PLACEHOLDER. The guide (p.10, p.28) specifies the SYMBOL lockup below 24px,
+     and (p.14) forbids rebuilding the mark. That asset is not in this repo, so
+     this is set type in the brand face rather than a reconstruction of the
+     symbol. Replace with the official symbol SVG when it is available. -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" fill="#0d0d0d"/>
-  <path d="M9 7h4v8.6L20.4 7H25l-7.7 8.9L25.4 25h-5.1l-5.6-7.2L13 19.4V25H9z" fill="#f2c230"/>
+  <rect width="32" height="32" fill="#111111"/>
+  <text x="16" y="16" fill="#f4c430"
+        font-family="Manrope, 'Segoe UI', Arial, sans-serif"
+        font-size="22" font-weight="800"
+        text-anchor="middle" dominant-baseline="central">K</text>
 </svg>

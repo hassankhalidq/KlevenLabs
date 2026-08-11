@@ -5,7 +5,7 @@ const COUNT_MS = 520; // count runs, then the panel wipes: ~780ms total
 const WIPE_MS = 260;
 
 /**
- * Load sequence: a mono counter to 100, then a clean wipe up into the hero.
+ * Load sequence: a counter to 100, then a clean wipe up into the hero.
  *
  * Deliberately plain. A longer flourish reads as a studio showing off in the
  * one place a visitor has no patience for, and the whole thing is over inside
@@ -67,7 +67,7 @@ export default function Curtain() {
 
   return (
     <div className={`curtain${wiping ? ' curtain-wiping' : ''}`} aria-hidden="true">
-      <span className="curtain-count mono">{String(count).padStart(3, '0')}</span>
+      <span className="curtain-count label">{String(count).padStart(3, '0')}</span>
     </div>
   );
 }

@@ -91,7 +91,7 @@ export default function DraftingField({
         const alpha = (0.17 + falloff * 0.42) * intensity * (1 + p * 0.5);
 
         ctx.beginPath();
-        ctx.strokeStyle = `rgba(242, 194, 48, ${alpha.toFixed(4)})`;
+        ctx.strokeStyle = `rgba(244, 196, 48, ${alpha.toFixed(4)})`;
         ctx.lineWidth = 0.7 + falloff * 0.9;
 
         for (let y = -step; y <= height + step; y += step) {

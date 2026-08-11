@@ -29,11 +29,15 @@ export default function SiteNav() {
       <div ref={sentinel} className="nav-sentinel" aria-hidden="true" />
       <header className={`nav${solid ? ' nav-solid' : ''}`}>
         <div className="nav-inner shell">
+          {/* Wordmark variant 04 from the guide: KLEVON over a letterspaced
+              LABS. The approved symbol lockup needs the real SVG asset, which
+              is not in this repo, and the guide forbids rebuilding it. */}
           <a href="#top" className="nav-mark" aria-label="Klevon Labs, back to top">
-            Klevon<span className="nav-mark-dim">Labs</span>
+            <span className="nav-mark-name">Klevon</span>
+            <span className="nav-mark-sub">Labs</span>
           </a>
           <nav aria-label="Primary">
-            <ul className="nav-links mono">
+            <ul className="nav-links label">
               <li>
                 <a href="#work">Work</a>
               </li>

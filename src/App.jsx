@@ -50,7 +50,7 @@ export default function App() {
         <Work />
         <Process />
 
-        <div className="region-paper">
+        <div className="region-lab">
           <Why />
           <Audience />
         </div>

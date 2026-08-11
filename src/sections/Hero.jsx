@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useRef } from 'react';
 import DraftingField from '../components/DraftingField';
 import MagneticCTA from '../components/MagneticCTA';
+import OpenFrame from '../components/OpenFrame';
 import { gsap, ScrollTrigger, DESKTOP, MOBILE } from '../lib/motion';
 
 const LINES = [
@@ -102,12 +103,16 @@ export default function Hero() {
   return (
     <section className="hero" id="top" ref={root}>
       <div className="hero-media" aria-hidden="true">
-        <DraftingField animated variant={0} progressRef={progress} />
+        <DraftingField animated variant={0} intensity={0.68} progressRef={progress} />
         <div className="hero-scrim" />
       </div>
 
+      {/* The brand's own graphic idiom, and the reason the line field behind
+          it is dialled back: the frame is the anchor, the field is weather. */}
+      <OpenFrame trigger="load" className="hero-frame" />
+
       <div className="hero-body shell" ref={body}>
-        <p className="hero-eyebrow mono">Karachi-built. Globally shipped.</p>
+        <p className="hero-eyebrow label">Karachi-built. Globally shipped.</p>
 
         {/* Real space text nodes between the word spans, not a CSS margin.
             A margin looks identical but leaves the accessible name as

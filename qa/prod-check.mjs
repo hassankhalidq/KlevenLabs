@@ -36,9 +36,12 @@ for (const vp of [
     // Did the brand faces actually load, or did we fall back to a system sans?
     const h1 = document.querySelector('h1');
     const usedFamily = getComputedStyle(h1).fontFamily;
-    const bricolageOk = document.fonts.check('700 100px "Bricolage Grotesque"');
-    const hankenOk = document.fonts.check('400 16px "Hanken Grotesk"');
-    const monoOk = document.fonts.check('500 12px "JetBrains Mono"');
+    // The loaded FontFace list is definitive; fonts.check() returns true even
+    // for a family that is not there, because it accounts for fallback.
+    const manropeOk = [...document.fonts].some(
+      (f) => f.family === 'Manrope' && f.status === 'loaded',
+    );
+    const h1Family = getComputedStyle(h1).fontFamily;
 
     // Is the hero canvas actually painting, or is it a blank element?
     const canvas = document.querySelector('.hero-media canvas');
@@ -57,9 +60,8 @@ for (const vp of [
       fontCount: loaded.length,
       loaded,
       usedFamily,
-      bricolageOk,
-      hankenOk,
-      monoOk,
+      manropeOk,
+      h1Family,
       canvasPainted,
       canvasSize,
       title: document.title,
@@ -69,15 +71,15 @@ for (const vp of [
     };
   });
 
-  if (!checks.bricolageOk) problems.push(`[${vp.name}] Bricolage Grotesque did not load`);
-  if (!checks.hankenOk) problems.push(`[${vp.name}] Hanken Grotesk did not load`);
-  if (!checks.monoOk) problems.push(`[${vp.name}] JetBrains Mono did not load`);
+  if (!checks.manropeOk) problems.push(`[${vp.name}] Manrope did not load`);
+  if (!/Manrope/.test(checks.h1Family))
+    problems.push(`[${vp.name}] h1 not set in Manrope: ${checks.h1Family}`);
   if (!checks.canvasPainted) problems.push(`[${vp.name}] hero canvas is blank`);
-  if (checks.heroCtaBg !== 'rgb(242, 194, 48)')
-    problems.push(`[${vp.name}] CTA background is ${checks.heroCtaBg}, expected rgb(242, 194, 48)`);
+  if (checks.heroCtaBg !== 'rgb(244, 196, 48)')
+    problems.push(`[${vp.name}] CTA background is ${checks.heroCtaBg}, expected rgb(244, 196, 48)`);
 
   notes.push(
-    `[${vp.name}] fonts ok: bricolage=${checks.bricolageOk} hanken=${checks.hankenOk} mono=${checks.monoOk} | canvas ${checks.canvasSize} painted=${checks.canvasPainted} | work canvases=${checks.workCanvases}`,
+    `[${vp.name}] Manrope loaded=${checks.manropeOk} h1=${checks.h1Family} | canvas ${checks.canvasSize} painted=${checks.canvasPainted} | work canvases=${checks.workCanvases}`,
   );
 
   const axe = await new AxeBuilder({ page })

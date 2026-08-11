@@ -21,7 +21,7 @@ export default function Audience() {
         </Reveal>
 
         <Reveal className="audience-regions" delay={0.08}>
-          <h3 className="audience-regions-label mono">Working from</h3>
+          <h3 className="audience-regions-label label">Working from</h3>
           <ul className="audience-list">
             {REGIONS.map((region) => (
               <li key={region}>{region}</li>

@@ -12,7 +12,7 @@ const SERVICES = [
     name: 'E-commerce',
     line: 'Stores built for conversion and craft at the same time, not a Shopify theme wearing a new logo.',
     tag: 'Commerce',
-    tone: 'paper',
+    tone: 'lab',
   },
   {
     name: 'Mobile apps',
@@ -125,7 +125,7 @@ export default function Services() {
             <div className="shell service-inner">
               <h2 className="service-name service-anim">{service.name}</h2>
               <div className="service-meta">
-                <p className="service-tag mono service-anim">{service.tag}</p>
+                <p className="service-tag label service-anim">{service.tag}</p>
                 <p className="service-line service-anim">{service.line}</p>
               </div>
             </div>

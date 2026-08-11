@@ -46,21 +46,46 @@ profiles. Add them once the real handles exist.
 
 ## Design system
 
-Four locked colours, defined in `src/styles/tokens.css`. Everything else on the
-page is one of them at an alpha, never a new hue and never a neutral grey.
+Aligned to **Brand Guidelines edition 01.2**. Token names use the guide's own
+vocabulary so the code can be checked against the PDF without translation.
+Everything lives in `src/styles/tokens.css`.
 
-| Token      | Value     | Role                                    |
-| ---------- | --------- | --------------------------------------- |
-| `--ink`    | `#0D0D0D` | Base background                         |
-| `--signal` | `#F2C230` | Identity colour, used generously        |
-| `--ember`  | `#C1361F` | Accent, at most one moment per section  |
-| `--paper`  | `#F7F5EF` | The single off-white block              |
+| Token      | Value     | Guide name    | Role                                   |
+| ---------- | --------- | ------------- | -------------------------------------- |
+| `--ink`    | `#111111` | Ink           | Base background                        |
+| `--yellow` | `#F4C430` | Klevon Yellow | Identity colour, used generously       |
+| `--lab`    | `#EFEEE9` | Lab           | The single off-white block             |
+| `--alert`  | `#D7263D` | Alert         | Accent, at most one moment per section |
 
-Type: Bricolage Grotesque (display), Hanken Grotesk (body), JetBrains Mono
-(labels). All three are self-hosted from `public/fonts/` as latin-subset
-variable fonts, 197KB total, preloaded.
+Every other colour on the page is one of those four at an alpha. No fifth hue,
+and no neutral grey.
+
+**Open question:** the guidelines (p.16) give Alert as `#D7263D`; the standalone
+brand board gives `#BD0808`. `#D7263D` is in use as the working value because it
+comes from the fuller document. Changing `--alert` updates every accent moment
+on the page at once.
+
+Type is **Manrope** throughout, self-hosted as one 25KB variable file. Weights
+per guide p.17-18: ExtraBold 800 display and H1, Semibold 600 H2, Regular 400
+body, Bold 700 uppercase for labels. The guide's point sizes (44/28/18/10/7) are
+a document spec, so the scale keeps their *relationships* rather than the literal
+values, and adds a viewport-scale `--t-hero` step above Display for the one
+headline that has to work full-bleed.
+
+The **open frame** (guide p.20) is the brand's graphic device: one yellow
+bracket per composition, on the 12-column grid. It anchors the hero, drawn on
+load. `src/components/OpenFrame.jsx`.
 
 Corner radius is zero everywhere by design.
+
+### Assets still needed from the brand owner
+
+- **The symbol / logo SVG.** The guide forbids rebuilding the mark (p.14), and
+  the asset is not in this repo. The nav and footer therefore use the approved
+  *wordmark* variant (p.10, no.04) set in Manrope, and `public/favicon.svg` is
+  set type rather than a reconstruction of the symbol. Both should be replaced
+  with the official SVG.
+
 
 ## Motion
 

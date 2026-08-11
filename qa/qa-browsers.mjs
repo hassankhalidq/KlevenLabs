@@ -59,7 +59,12 @@ for (const [name, engine] of ENGINES) {
           h1: q('h1')?.innerText.replace(/\s+/g, ' ').trim(),
           curtainGone: !q('.curtain'),
           painted,
-          fontOk: document.fonts.check('700 100px "Bricolage Grotesque"'),
+          // fonts.check() returns true even for an absent family, because it
+          // accounts for fallback. The loaded FontFace list is definitive.
+          fontOk: [...document.fonts].some(
+            (f) => f.family === 'Manrope' && f.status === 'loaded',
+          ),
+          h1Family: getComputedStyle(q('h1')).fontFamily,
           ctaBg: cs('.cta', 'backgroundColor'),
           panels: document.querySelectorAll('.service-panel').length,
           marqueeAnim: cs('.marquee-track', 'animationName'),
@@ -78,8 +83,9 @@ for (const [name, engine] of ENGINES) {
 
       if (!r.curtainGone) fails.push(`[${id}] curtain never cleared`);
       if (r.painted !== true) fails.push(`[${id}] hero canvas not painted (${r.painted})`);
-      if (!r.fontOk) fails.push(`[${id}] display font not loaded`);
-      if (r.ctaBg !== 'rgb(242, 194, 48)') fails.push(`[${id}] CTA bg wrong: ${r.ctaBg}`);
+      if (!r.fontOk) fails.push(`[${id}] Manrope did not load`);
+      if (!/Manrope/.test(r.h1Family)) fails.push(`[${id}] h1 not set in Manrope: ${r.h1Family}`);
+      if (r.ctaBg !== 'rgb(244, 196, 48)') fails.push(`[${id}] CTA bg wrong: ${r.ctaBg}`);
       if (r.panels !== 3) fails.push(`[${id}] expected 3 service panels, got ${r.panels}`);
       if (!r.clipSupport) fails.push(`[${id}] clip-path unsupported`);
       if (r.overflow > 0) fails.push(`[${id}] horizontal overflow ${r.overflow}px`);

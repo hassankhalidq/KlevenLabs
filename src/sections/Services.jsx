@@ -1,49 +1,127 @@
-import Reveal from '../components/Reveal';
+import { useEffect, useRef } from 'react';
+import { gsap, DESKTOP, MOBILE } from '../lib/motion';
 
 const SERVICES = [
   {
     name: 'Websites',
     line: 'Hand-coded and animation-driven, for brands that need to look like the biggest player in their category before they are.',
     tag: 'Web',
+    tone: 'ink',
   },
   {
     name: 'E-commerce',
     line: 'Stores built for conversion and craft at the same time, not a Shopify theme wearing a new logo.',
     tag: 'Commerce',
+    tone: 'paper',
   },
   {
     name: 'Mobile apps',
     line: 'Product-minded builds, from the first flow to a shipped app.',
     tag: 'iOS / Android',
+    tone: 'ink',
   },
 ];
 
+/**
+ * Desktop: the section pins and each service wipes over the one before it via
+ * clip-path, carrying a tone change with it. clip-path is the sanctioned
+ * exception to the transform/opacity rule here: it composites without
+ * triggering layout, and there is no transform that reveals a panel in place.
+ *
+ * Deliberately a wipe, not a stack of dimmed pillars that highlight in turn.
+ * The panels replace each other; they do not sit there fading.
+ *
+ * Mobile: no pin, no cycling. Three ordinary stacked sections that slide in.
+ */
 export default function Services() {
-  return (
-    <section className="section services" id="services">
-      <div className="shell">
-        <Reveal>
-          <h2 className="services-title">
-            Three services.
-            <br />
-            All of it hand-built.
-          </h2>
-        </Reveal>
+  const root = useRef(null);
 
-        <Reveal delay={0.08}>
-          <ul className="services-list">
-            {SERVICES.map((service) => (
-              <li className="service" key={service.name}>
-                {/* The section's single red moment: a marker that arrives on
-                    hover. Transform only, so it costs nothing to paint. */}
-                <span className="service-marker" aria-hidden="true" />
-                <h3 className="service-name">{service.name}</h3>
-                <p className="service-line">{service.line}</p>
-                <span className="service-tag mono">{service.tag}</span>
-              </li>
-            ))}
-          </ul>
-        </Reveal>
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const panels = gsap.utils.toArray('.service-panel');
+      const mm = gsap.matchMedia();
+
+      mm.add(DESKTOP, () => {
+        // One unit of timeline per service, so each gets an equal share of the
+        // scroll. Panel 1 holds for its unit, then 2 and 3 wipe over in turn.
+        const tl = gsap.timeline({
+          defaults: { ease: 'none' },
+          scrollTrigger: {
+            trigger: root.current,
+            start: 'top top',
+            end: '+=200%',
+            pin: '.services-pin',
+            pinSpacing: true,
+            scrub: true,
+            invalidateOnRefresh: true,
+          },
+        });
+
+        panels.slice(1).forEach((panel, i) => {
+          tl.fromTo(
+            panel,
+            { clipPath: 'inset(100% 0% 0% 0%)' },
+            { clipPath: 'inset(0% 0% 0% 0%)', duration: 1 },
+            i + 1,
+          );
+          // Content lags the wipe slightly so it arrives with the panel rather
+          // than sliding in already-formed behind the edge.
+          tl.from(
+            panel.querySelectorAll('.service-anim'),
+            { yPercent: 40, opacity: 0, duration: 0.55, stagger: 0.08 },
+            i + 1.25,
+          );
+        });
+
+        return () => tl.scrollTrigger?.kill();
+      });
+
+      mm.add(MOBILE, () => {
+        gsap.set(panels, { clearProps: 'clipPath' });
+        const tweens = panels.map((panel) =>
+          gsap.from(panel.querySelectorAll('.service-anim'), {
+            y: 24,
+            opacity: 0,
+            duration: 0.55,
+            ease: 'power3.out',
+            stagger: 0.07,
+            scrollTrigger: { trigger: panel, start: 'top 78%', once: true },
+          }),
+        );
+        return () => tweens.forEach((t) => {
+          t.scrollTrigger?.kill();
+          t.kill();
+        });
+      });
+
+      return () => mm.revert();
+    }, root);
+
+    return () => ctx.revert();
+  }, []);
+
+  return (
+    <section className="services" id="services" ref={root}>
+      <div className="services-pin">
+        {SERVICES.map((service, i) => (
+          <article
+            className={`service-panel service-panel-${service.tone}`}
+            key={service.name}
+            style={{ zIndex: i + 1 }}
+          >
+            {/* A full-viewport panel needs a composition, not a headline
+                floating in a void: the name carries the panel, the meta column
+                bottom-aligns against it and gives the right side something to
+                hold. */}
+            <div className="shell service-inner">
+              <h2 className="service-name service-anim">{service.name}</h2>
+              <div className="service-meta">
+                <p className="service-tag mono service-anim">{service.tag}</p>
+                <p className="service-line service-anim">{service.line}</p>
+              </div>
+            </div>
+          </article>
+        ))}
       </div>
     </section>
   );

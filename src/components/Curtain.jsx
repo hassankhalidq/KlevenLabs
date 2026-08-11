@@ -1,52 +1,73 @@
-import { useEffect, useState } from 'react';
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+import { prefersReducedMotion } from '../lib/motion';
+
+const COUNT_MS = 520; // count runs, then the panel wipes: ~780ms total
+const WIPE_MS = 260;
 
 /**
- * Load curtain. Purpose: state transition. It hides the first paint of the
- * canvas and the font swap, both of which are ugly for ~200ms.
+ * Load sequence: a mono counter to 100, then a clean wipe up into the hero.
  *
- * It never gates content. The page renders underneath immediately and the
- * panel lifts off it, so perceived load is not delayed. Waits on fonts but
- * with a hard 700ms cap, so a slow font fetch cannot hold the page hostage.
+ * Deliberately plain. A longer flourish reads as a studio showing off in the
+ * one place a visitor has no patience for, and the whole thing is over inside
+ * 800ms so it never becomes the reason the page feels slow.
+ *
+ * Counting is driven by rAF against a real clock rather than a setInterval per
+ * tick, so a busy main thread drops numbers instead of stretching the sequence.
  */
 export default function Curtain() {
-  const [lifted, setLifted] = useState(false);
-  const reduce = useReducedMotion();
+  const [count, setCount] = useState(0);
+  const [gone, setGone] = useState(false);
+  const [wiping, setWiping] = useState(false);
+  const raf = useRef(0);
 
   useEffect(() => {
-    if (reduce) {
-      setLifted(true);
+    if (prefersReducedMotion()) {
+      setGone(true);
+      document.documentElement.classList.remove('is-loading');
       return undefined;
     }
-    let done = false;
-    const lift = () => {
-      if (!done) {
-        done = true;
-        setLifted(true);
+
+    document.documentElement.classList.add('is-loading');
+    const start = performance.now();
+    let wipeTimer = 0;
+    let doneTimer = 0;
+
+    const tick = (now) => {
+      const t = Math.min((now - start) / COUNT_MS, 1);
+      // Ease the count so it decelerates into 100 instead of stopping dead.
+      const eased = 1 - (1 - t) ** 3;
+      setCount(Math.round(eased * 100));
+      if (t < 1) {
+        raf.current = requestAnimationFrame(tick);
+      } else {
+        setWiping(true);
+        wipeTimer = setTimeout(() => {
+          setGone(true);
+          document.documentElement.classList.remove('is-loading');
+        }, WIPE_MS);
       }
     };
-    const cap = setTimeout(lift, 700);
-    if (document.fonts?.ready) {
-      document.fonts.ready.then(() => setTimeout(lift, 90));
-    } else {
-      lift();
-    }
-    return () => clearTimeout(cap);
-  }, [reduce]);
+    raf.current = requestAnimationFrame(tick);
+
+    // Hard stop: the page is never held hostage by this, whatever happens.
+    doneTimer = setTimeout(() => {
+      setGone(true);
+      document.documentElement.classList.remove('is-loading');
+    }, 1600);
+
+    return () => {
+      cancelAnimationFrame(raf.current);
+      clearTimeout(wipeTimer);
+      clearTimeout(doneTimer);
+      document.documentElement.classList.remove('is-loading');
+    };
+  }, []);
+
+  if (gone) return null;
 
   return (
-    <AnimatePresence>
-      {!lifted && (
-        <motion.div
-          className="curtain"
-          initial={{ transform: 'translateY(0%)' }}
-          exit={{ transform: 'translateY(-100%)' }}
-          transition={{ duration: 0.62, ease: [0.77, 0, 0.175, 1] }}
-          aria-hidden="true"
-        >
-          <span className="curtain-mark mono">Klevon Labs</span>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <div className={`curtain${wiping ? ' curtain-wiping' : ''}`} aria-hidden="true">
+      <span className="curtain-count mono">{String(count).padStart(3, '0')}</span>
+    </div>
   );
 }

@@ -13,14 +13,18 @@ import { useReducedMotion } from 'framer-motion';
  * described in the brief. Swapping in a real <video> means replacing the
  * <canvas> inside Hero's .hero-media wrapper. Nothing else moves.
  *
- * @param {boolean} animated  Run the rAF loop. False renders one static frame.
- * @param {number}  variant   Picks a distinct geometry, so no two fields match.
- * @param {number}  intensity Line alpha multiplier.
+ * @param {boolean} animated    Run the rAF loop. False renders one static frame.
+ * @param {number}  variant     Picks a distinct geometry, so no two fields match.
+ * @param {number}  intensity   Line alpha multiplier.
+ * @param {object}  progressRef Plain ref, 0..1, written by ScrollTrigger and
+ *   read inside the draw loop. Deliberately not React state: this updates every
+ *   frame of a scrub and re-rendering the tree that often would drop frames.
  */
 export default function DraftingField({
   animated = true,
   variant = 0,
   intensity = 1,
+  progressRef = null,
   className = '',
 }) {
   const canvasRef = useRef(null);
@@ -46,21 +50,25 @@ export default function DraftingField({
     // locking into a repeating pattern.
     const v = variant % 4;
     const cfg = [
-      { a1: 0.045, f1: 0.0042, a2: 0.018, f2: 0.0110, p1: 1.0, p2: 2.6, s1: 0.16, s2: -0.11, lines: 110 },
-      { a1: 0.062, f1: 0.0031, a2: 0.014, f2: 0.0157, p1: 1.7, p2: 3.4, s1: -0.13, s2: 0.19, lines: 84 },
-      { a1: 0.034, f1: 0.0058, a2: 0.026, f2: 0.0089, p1: 2.3, p2: 1.4, s1: 0.21, s2: -0.15, lines: 96 },
-      { a1: 0.055, f1: 0.0037, a2: 0.021, f2: 0.0131, p1: 0.7, p2: 4.1, s1: -0.18, s2: 0.12, lines: 72 },
+      { a1: 0.045, f1: 0.0042, a2: 0.018, f2: 0.0110, p1: 1.0, p2: 2.6, s1: 0.16, s2: -0.11, lines: 92 },
+      { a1: 0.062, f1: 0.0031, a2: 0.014, f2: 0.0157, p1: 1.7, p2: 3.4, s1: -0.13, s2: 0.19, lines: 76 },
+      { a1: 0.034, f1: 0.0058, a2: 0.026, f2: 0.0089, p1: 2.3, p2: 1.4, s1: 0.21, s2: -0.15, lines: 84 },
+      { a1: 0.055, f1: 0.0037, a2: 0.021, f2: 0.0131, p1: 0.7, p2: 4.1, s1: -0.18, s2: 0.12, lines: 66 },
     ][v];
 
     const draw = (elapsed) => {
       ctx.clearRect(0, 0, width, height);
 
       // Narrow viewports get fewer lines: the weave still reads and the
-      // per-frame path cost stays sane on a phone GPU.
+      // per-frame path cost stays sane on a phone GPU. Fixed per variant rather
+      // than scaling with scroll progress, so the cost never grows mid-scrub.
       const lineCount = width < 720 ? Math.round(cfg.lines * 0.55) : cfg.lines;
-      const ampScale = width;
+
+      // Scroll progress through the hero pin tightens and distorts the weave.
+      const p = progressRef ? progressRef.current : 0;
+      const ampScale = width * (1 + p * 0.55);
       const a1 = ampScale * cfg.a1;
-      const a2 = ampScale * cfg.a2;
+      const a2 = ampScale * cfg.a2 * (1 + p * 1.4);
 
       // Light sweep: a travelling gaussian that lifts alpha where it passes.
       // Wide enough to light a broad band, so the field reads as one moving
@@ -68,7 +76,11 @@ export default function DraftingField({
       const sweep = ((elapsed * 0.085) % 1.7) - 0.35; // overshoots both edges
       const sigma = 0.3;
 
-      const step = height < 600 ? 16 : 12;
+      // Sample spacing along each line. The curves are gentle enough that 17px
+      // segments are indistinguishable from 12px, and the saving is real:
+      // this loop runs lineCount times per frame while the hero pin is also
+      // scrubbing, which is exactly where the frame budget is tightest.
+      const step = height < 600 ? 20 : 17;
       const TAU = Math.PI * 2;
 
       for (let i = 0; i < lineCount; i += 1) {
@@ -76,7 +88,7 @@ export default function DraftingField({
         const baseX = u * width;
 
         const falloff = Math.exp(-((u - sweep) ** 2) / (2 * sigma * sigma));
-        const alpha = (0.17 + falloff * 0.42) * intensity;
+        const alpha = (0.17 + falloff * 0.42) * intensity * (1 + p * 0.5);
 
         ctx.beginPath();
         ctx.strokeStyle = `rgba(242, 194, 48, ${alpha.toFixed(4)})`;
@@ -135,7 +147,7 @@ export default function DraftingField({
       ro.disconnect();
       io.disconnect();
     };
-  }, [animated, variant, intensity, reduce]);
+  }, [animated, variant, intensity, progressRef, reduce]);
 
   return <canvas ref={canvasRef} className={className} aria-hidden="true" />;
 }

@@ -53,19 +53,23 @@ export default function Contact() {
       <label className="field-label mono" htmlFor={name}>
         {label}
       </label>
-      <input
-        className="field-input"
-        id={name}
-        name={name}
-        type={type}
-        value={values[name]}
-        onChange={update(name)}
-        aria-invalid={errors[name] ? 'true' : undefined}
-        aria-describedby={errors[name] ? `${name}-error` : undefined}
-        autoComplete={
-          name === 'name' ? 'name' : name === 'email' ? 'email' : 'off'
-        }
-      />
+      <span className="field-wrap">
+        <input
+          className="field-input"
+          id={name}
+          name={name}
+          type={type}
+          value={values[name]}
+          onChange={update(name)}
+          aria-invalid={errors[name] ? 'true' : undefined}
+          aria-describedby={errors[name] ? `${name}-error` : undefined}
+          autoComplete={
+            name === 'name' ? 'name' : name === 'email' ? 'email' : 'off'
+          }
+        />
+        {/* Draws in from the left on focus rather than just recolouring. */}
+        <span className="field-underline" aria-hidden="true" />
+      </span>
       {errors[name] && (
         <p className="field-error" id={`${name}-error`}>
           {errors[name]}

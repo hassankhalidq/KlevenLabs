@@ -152,7 +152,7 @@ for (const vp of [
       .filter((a) => a.playState === 'running')
       .map((a) => a.effect?.target?.className || 'unknown');
     const heroVisible = (() => {
-      const el = document.querySelector('.hero-line-inner');
+      const el = document.querySelector('.hero-word-inner');
       if (!el) return false;
       return getComputedStyle(el).opacity === '1';
     })();

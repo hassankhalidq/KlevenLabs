@@ -62,15 +62,42 @@ variable fonts, 197KB total, preloaded.
 
 Corner radius is zero everywhere by design.
 
+## Motion
+
+Three libraries, split by job. Don't blur the line.
+
+- **Lenis** for smooth scroll site-wide, driven by GSAP's ticker so there is one
+  rAF loop rather than two fighting each other. `src/lib/motion.js`.
+- **GSAP + ScrollTrigger** for the heavy scroll mechanics only: the hero pin,
+  the services mask-wipe, the process line draw.
+- **Framer Motion** for the light interactive layer: the magnetic CTA, hover
+  states, the grouped fade reveals in the calm sections.
+
+Pacing alternates heavy and calm the whole way down, and no two pinned sections
+touch. If you add or reorder a section, keep that true.
+
+Every mechanic has three paths: desktop, mobile (no pin, no scrub, simplified),
+and reduced motion (mechanics off, page fully readable). `gsap.matchMedia()`
+with the `DESKTOP` / `MOBILE` / `ANIMATED` queries in `src/lib/motion.js` picks
+between them and handles its own teardown.
+
+Every animated value defaults to its *finished* state in CSS, so a branch that
+never runs leaves content visible rather than stuck at opacity 0.
+
 ## QA
 
 ```bash
 node qa/audit.mjs   # axe WCAG 2.1 AA, copy bans, heading order, reduced motion
 node qa/shot.mjs    # screenshots at 1440 / 834 / 390, checks for overflow
 node qa/prod-check.mjs https://kleven-labs.vercel.app   # verify the live site
+node qa/scroll-test.mjs      # screenshots down the full page, desktop + mobile
+node qa/perf.mjs '' 4        # frame times under 4x CPU throttle while scrolling
+node qa/reduced-motion.mjs   # confirms every mechanic is off and page is readable
+node qa/mech-check.mjs http://localhost:5173/   # ScrollTrigger + line draw (dev server)
 ```
 
-Both need `npm run preview` running first. They are dev-only; if you want a
+All need `npm run preview` running first, except `mech-check`, which needs
+`npm run dev`. They are dev-only; if you want a
 leaner deploy install, remove `playwright`, `@axe-core/playwright` and
 `axe-core` from devDependencies.
 

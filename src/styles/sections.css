@@ -14,6 +14,12 @@
 
 /* ---------- Load curtain ---------- */
 
+/* Scroll is locked only while the counter runs. */
+html.is-loading,
+html.is-loading body {
+  overflow: hidden;
+}
+
 .curtain {
   position: fixed;
   inset: 0;
@@ -21,13 +27,26 @@
   background: var(--ink);
   display: flex;
   align-items: flex-end;
+  justify-content: flex-end;
   padding: var(--gutter);
+  transform: translateY(0);
+  transition: transform 260ms var(--ease-in-out);
   will-change: transform;
 }
 
-.curtain-mark {
+.curtain-wiping {
+  transform: translateY(-100%);
+}
+
+.curtain-count {
   color: var(--signal);
-  letter-spacing: 0.3em;
+  font-size: clamp(2.5rem, 7vw, 5rem);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  /* Tabular figures: without them the counter jitters sideways as digits
+     change, which is the whole reason loading counters usually look cheap. */
+  font-feature-settings: 'tnum' 1;
+  font-variant-numeric: tabular-nums;
 }
 
 /* ---------- Nav ---------- */
@@ -253,6 +272,14 @@
   padding-top: calc(68px + 4rem);
   padding-bottom: clamp(4.5rem, 11vh, 8rem);
   width: 100%;
+  transform-origin: 12% 78%;
+}
+
+/* Only reserved while the pin can actually run. */
+@media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
+  .hero-body {
+    will-change: transform, opacity;
+  }
 }
 
 .hero-eyebrow {
@@ -270,16 +297,25 @@
 
 .hero-line {
   display: block;
-  overflow: hidden;
   /* Descenders in "product", "Designed" and "by" sit below the line box.
      Reserve for them, then pull the next line back up. */
   padding-bottom: 0.13em;
   margin-bottom: -0.08em;
 }
 
-.hero-line-inner {
-  display: block;
-  will-change: transform;
+/* Each word is its own clipping window so the line assembles word by word.
+   The clip lives here, not on the line, or the words would all share one mask
+   and slide as a single block. */
+.hero-word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.13em;
+  margin-bottom: -0.13em;
+}
+
+.hero-word-inner {
+  display: inline-block;
 }
 
 /* Asymmetry: the headline runs the full measure, the tail is indented into
@@ -381,80 +417,167 @@
   font-weight: 800;
 }
 
-/* ---------- Services ---------- */
+/* ---------- Marquee ---------- */
 
-.services-title {
-  font-size: var(--t-display);
-  max-width: 16ch;
-  margin-bottom: clamp(3rem, 7vh, 5rem);
+.marquee {
+  overflow: hidden;
+  border-top: 1px solid var(--ink-hairline-soft);
+  border-bottom: 1px solid var(--ink-hairline-soft);
+  padding-block: clamp(1.1rem, 2.4vh, 1.6rem);
 }
 
-.services-list {
-  list-style: none;
-  padding: 0;
-  border-bottom: 1px solid var(--ink-hairline);
+.marquee-track {
+  display: flex;
+  width: max-content;
+  /* CSS animation, not rAF: predetermined motion runs off the main thread and
+     keeps moving while the pins and scrubs elsewhere are busy. */
+  animation: marquee 34s linear infinite;
+  will-change: transform;
 }
 
-.service {
-  position: relative;
-  border-top: 1px solid var(--ink-hairline);
-  padding-block: clamp(1.75rem, 4vh, 2.75rem);
-  display: grid;
-  gap: 0.5rem 2rem;
-  transition: transform var(--dur-ui) var(--ease-out);
-}
-
-@media (min-width: 860px) {
-  .service {
-    grid-template-columns: 4fr 6fr 2fr;
-    align-items: baseline;
-    gap: 2.5rem;
+/* Two identical strips translated by exactly half the track make the loop
+   seamless. */
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
   }
 }
 
-.service-marker {
-  position: absolute;
-  left: 0;
-  top: -1px;
-  height: 1px;
+.marquee-strip {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.marquee-strip li {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  color: var(--on-ink-2);
+}
+
+.marquee-dot {
+  color: var(--signal);
+  padding-inline: clamp(1.25rem, 3vw, 2.5rem);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .marquee:hover .marquee-track {
+    animation-play-state: paused;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+    will-change: auto;
+  }
+  /* Static, so the duplicate strip would just be dead width. */
+  .marquee-strip[aria-hidden='true'] {
+    display: none;
+  }
+}
+
+/* ---------- Services ---------- */
+
+.services-pin {
+  position: relative;
+  min-height: 100dvh;
+  overflow: hidden;
+}
+
+.service-panel {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  padding-block: var(--section-y);
+}
+
+/* Only the stacked desktop version needs absolute positioning. On mobile the
+   panels are ordinary sections in flow. */
+@media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
+  .service-panel {
+    position: absolute;
+    inset: 0;
+    padding-block: 0;
+  }
+  .service-panel + .service-panel {
+    clip-path: inset(100% 0% 0% 0%);
+  }
+}
+
+.service-panel-ink {
+  background: var(--ink);
+  color: var(--on-ink);
+}
+
+.service-panel-paper {
+  background: var(--paper);
+  color: var(--on-paper);
+}
+
+.service-inner {
   width: 100%;
-  background: var(--ember);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 340ms var(--ease-out);
+  display: grid;
+  gap: clamp(1.75rem, 4vh, 3rem);
+}
+
+@media (min-width: 900px) {
+  .service-inner {
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: clamp(2rem, 6vw, 5rem);
+  }
 }
 
 .service-name {
-  font-size: var(--t-display-sm);
+  font-size: clamp(2.6rem, 8.6vw, 9rem);
   font-weight: 600;
-  transition: color var(--dur-ui) var(--ease-out);
+  line-height: 0.9;
+  letter-spacing: -0.045em;
+}
+
+.service-meta {
+  display: grid;
+  gap: 1rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--ink-hairline);
+  max-width: 34ch;
+}
+
+.service-panel-paper .service-meta {
+  border-top-color: var(--paper-hairline);
+}
+
+@media (min-width: 900px) {
+  .service-meta {
+    width: 34ch;
+    /* Sits off the name's baseline rather than floating mid-panel. */
+    margin-bottom: 0.6rem;
+  }
 }
 
 .service-line {
+  font-size: var(--t-lead);
+  line-height: 1.5;
   color: var(--on-ink-2);
-  max-width: 46ch;
+}
+
+.service-panel-paper .service-line {
+  color: var(--on-paper-2);
 }
 
 .service-tag {
   color: var(--on-ink-3);
 }
 
-@media (min-width: 860px) {
-  .service-tag {
-    text-align: right;
-  }
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .service:hover {
-    transform: translateX(10px);
-  }
-  .service:hover .service-marker {
-    transform: scaleX(1);
-  }
-  .service:hover .service-name {
-    color: var(--signal);
-  }
+.service-panel-paper .service-tag {
+  color: var(--on-paper-3);
 }
 
 /* ---------- Work ---------- */
@@ -615,26 +738,39 @@
 }
 
 .process-steps {
+  /* One variable drives both the step rhythm and the dot's offset, so they
+     cannot drift apart. */
+  --step-pad: clamp(2.25rem, 8vh, 5.5rem);
+  --rail-gap: clamp(1.75rem, 3vw, 2.75rem);
   position: relative;
-  padding-left: clamp(1.75rem, 3vw, 2.75rem);
+  padding-left: var(--rail-gap);
 }
 
-.process-rail {
+.process-svg {
   position: absolute;
   left: 0;
   top: 0;
-  bottom: 0;
-  width: 1px;
-  background: var(--ink-hairline);
+  width: 2px;
+  height: 100%;
+  overflow: visible;
 }
 
-.process-rail-fill {
-  display: block;
-  position: absolute;
-  inset: 0;
-  background: var(--signal);
-  transform-origin: top;
-  will-change: transform;
+/* stroke-width is in user units. The 1-unit-wide viewBox is rendered 2px wide,
+   so 0.5 lands on a 1px hairline. */
+.process-track {
+  stroke: var(--ink-hairline);
+  stroke-width: 0.5;
+  fill: none;
+}
+
+/* Defaults to fully drawn. If the GSAP branch never runs, which is exactly
+   what happens under reduced motion, the line is simply there. */
+.process-path {
+  stroke: var(--signal);
+  stroke-width: 0.5;
+  fill: none;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
 }
 
 .process-list {
@@ -643,15 +779,17 @@
   margin: 0;
 }
 
+/* Generous rhythm here is functional, not decorative: the steps have to span
+   more than a viewport for the line to have any distance to draw across. */
 .process-step {
   position: relative;
-  padding-block: clamp(1.5rem, 4vh, 2.5rem);
+  padding-block: var(--step-pad);
 }
 
 .process-dot {
   position: absolute;
-  left: calc(clamp(1.75rem, 3vw, 2.75rem) * -1);
-  top: calc(clamp(1.5rem, 4vh, 2.5rem) + 0.34em);
+  left: calc(var(--rail-gap) * -1);
+  top: calc(var(--step-pad) + 0.34em);
   width: 7px;
   height: 7px;
   transform: translateX(-3px);
@@ -809,6 +947,12 @@
   color: var(--on-ink-3);
 }
 
+.field-wrap {
+  position: relative;
+  display: block;
+  width: 100%;
+}
+
 /* A heavier rule than the page hairline. A form field has to advertise that
    it is a field; at 0.14 alpha it reads as a divider. */
 .field-input {
@@ -822,9 +966,24 @@
   transition: border-color var(--dur-ui) var(--ease-out);
 }
 
+.field-underline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: var(--signal);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 240ms var(--ease-out);
+}
+
 .field-input:focus {
   outline: none;
-  border-bottom-color: var(--signal);
+}
+
+.field-input:focus ~ .field-underline {
+  transform: scaleX(1);
 }
 
 .field-input:focus-visible {
@@ -934,11 +1093,17 @@
   }
   .work-media,
   .work-detail,
-  .service,
   .cta-underline,
   .submit-rule,
-  .work-frame::after,
-  .service-marker {
+  .field-underline,
+  .work-frame::after {
     transition-duration: 1ms;
+  }
+  /* No pin runs in this mode, so nothing should be reserving a compositor
+     layer for a transform that will never happen. */
+  .hero-body,
+  .marquee-track,
+  .work-media {
+    will-change: auto;
   }
 }

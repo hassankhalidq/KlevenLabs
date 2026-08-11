@@ -1,30 +1,18 @@
-import { useRef } from 'react';
-import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
+import Reveal from '../components/Reveal';
 
 /**
- * Palate cleanser between the hero and the content. Tighter block than the
- * rest of the page on purpose, so it reads as a beat rather than a section.
- *
- * The one scroll-linked drift on the page. Purpose: rhythm. It gives the band
- * a sense of passing through rather than sitting still, and the travel is kept
- * small enough that the line never approaches the edges.
+ * Palate cleanser. Round 1 gave this a scroll-linked horizontal drift; that
+ * came out once the marquee band arrived directly above it, because two
+ * sideways-moving things in the same stretch of page is one too many. This is
+ * now a still statement, which is what a manifesto should be anyway.
  */
 export default function Manifesto() {
-  const ref = useRef(null);
-  const reduce = useReducedMotion();
-
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ['start end', 'end start'],
-  });
-  const x = useTransform(scrollYProgress, [0, 1], ['3.5vw', '-3.5vw']);
-
   return (
-    <section className="manifesto" ref={ref} aria-label="Positioning">
-      <motion.p className="manifesto-line" style={reduce ? undefined : { x }}>
+    <section className="manifesto" aria-label="Positioning">
+      <Reveal as="p" className="manifesto-line" y={18}>
         Most agencies sell hours. We sell{' '}
         <em className="manifesto-em">judgment</em>.
-      </motion.p>
+      </Reveal>
     </section>
   );
 }

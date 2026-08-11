@@ -1,6 +1,9 @@
+import { useEffect } from 'react';
+import { startSmoothScroll, ScrollTrigger } from './lib/motion';
 import Curtain from './components/Curtain';
 import SiteNav from './components/SiteNav';
 import Hero from './sections/Hero';
+import Marquee from './sections/Marquee';
 import Manifesto from './sections/Manifesto';
 import Services from './sections/Services';
 import Work from './sections/Work';
@@ -11,6 +14,21 @@ import Contact from './sections/Contact';
 import Footer from './sections/Footer';
 
 export default function App() {
+  useEffect(() => {
+    const stop = startSmoothScroll();
+    // Sections mount with fonts still swapping and a canvas still sizing, both
+    // of which change the page height. One refresh after that settles keeps
+    // every pin's start and end where it belongs.
+    const settle = setTimeout(() => ScrollTrigger.refresh(), 900);
+    const onLoad = () => ScrollTrigger.refresh();
+    window.addEventListener('load', onLoad);
+    return () => {
+      clearTimeout(settle);
+      window.removeEventListener('load', onLoad);
+      stop();
+    };
+  }, []);
+
   return (
     <>
       <a className="skip" href="#main">
@@ -20,16 +38,18 @@ export default function App() {
       <div className="grain" aria-hidden="true" />
       <SiteNav />
 
+      {/* Pacing: heavy and calm alternate the whole way down. Hero pin (heavy),
+          marquee (calm), manifesto (calm), services wipe (heavy), work
+          (moderate), process draw (moderate), why and audience (calm), contact
+          (moderate), footer (calm). No two pinned sections touch. */}
       <main id="main">
         <Hero />
+        <Marquee />
         <Manifesto />
         <Services />
         <Work />
         <Process />
 
-        {/* The page is dark. This is the single deliberate colour-block flip
-            the brief asks for, and it flips back once, rather than alternating
-            light and dark down the page. */}
         <div className="region-paper">
           <Why />
           <Audience />
